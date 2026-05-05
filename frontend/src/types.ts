@@ -1,9 +1,9 @@
 /**
  * Hand-mirrored from backend/app/state.py.
  *
- * Sync rule (per CLAUDE.md): when state.py changes, edit this file. Do not
- * generate. The hand-mirroring is a forcing function — every wire-shape
- * change is a deliberate edit, not a regen artifact.
+ * Sync rule: when state.py changes, edit this file. Do not generate.
+ * The hand-mirroring is a forcing function; every wire-shape change is
+ * a deliberate edit, not a regen artifact.
  *
  * Datetime convention: all datetimes cross the wire as ISO 8601 strings.
  * No Date objects. The frontend formats for display at the leaf component.

@@ -278,7 +278,7 @@ Options considered:
 - A: Extract the wrapping into a shared helper; each agent file becomes ~10 lines (STAGE + CATALOG + thin wrapper).
 - B: Keep each agent as a standalone function with the wrapping inlined. Repetition is the cost.
 Chosen: B.
-Rationale: LangGraph nodes are typed function references; keeping each agent as its own callable preserves that mental model. The repetition is also the kind of "boring-by-design" code an evaluator can scan one file and skim the rest of. Abstraction was tempting but premature — per CLAUDE.md "abstract only on second use" — and Victor explicitly flagged "resist the temptation to improve the pattern as you replicate."
+Rationale: LangGraph nodes are typed function references; keeping each agent as its own callable preserves that mental model. The repetition is also the kind of "boring-by-design" code an evaluator can scan one file and skim the rest of. Abstraction was tempting but premature; the project rule was "abstract only on second use" and the explicit flag was "resist the temptation to improve the pattern as you replicate."
 Interview defense: "We chose readable repetition over premature abstraction. If a 7th agent ever appears, *that's* the moment to extract — when the abstraction has three real consumers, not five guesses."
 
 ---
@@ -296,7 +296,7 @@ Interview defense: "The agent's contract is the *decision*. The orchestrator's c
 ---
 
 ## 2026-05-05 11:00 — RNG is injected per-call, not module-global or env-var-driven
-Context: Backend/CLAUDE.md mentions `IKS_SEED` env var for reproducibility. Where does the seed actually live?
+Context: The project spec called for an `IKS_SEED` env var for reproducibility. Where does the seed actually live?
 Options considered:
 - A: Module-global `random.Random()` seeded at import.
 - B: Env-var-derived RNG inside each agent.

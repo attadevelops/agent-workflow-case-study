@@ -1,8 +1,8 @@
 /**
  * Backend API client.
  *
- * One thin layer of fetch wrappers — no SWR/React Query (per CLAUDE.md, polling
- * via setInterval is the contract). Polling logic lives in `lib/usePollingData.ts`.
+ * One thin layer of fetch wrappers; no SWR/React Query — polling via setInterval
+ * is the contract. Polling logic lives in `lib/usePollingData.ts`.
  *
  * Base URL is overridable via `VITE_API_BASE` env var. Default targets the dev
  * uvicorn at 127.0.0.1:8765.

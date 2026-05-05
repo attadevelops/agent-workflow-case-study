@@ -1,9 +1,9 @@
 /**
  * Single polling hook for the entire app.
  *
- * Per backend/CLAUDE.md and frontend/CLAUDE.md:
+ * Project contract:
  *   • Polling cadence: 2 seconds.
- *   • No SWR, no React Query — plain useEffect + setInterval.
+ *   • No SWR, no React Query; plain useEffect + setInterval.
  *   • Both views (Dashboard, Exception Queue) consume the same hook output;
  *     the data is fetched once per tick and shared via props.
  *

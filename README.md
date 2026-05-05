@@ -68,10 +68,7 @@ The form uses `default_resolution_mode` to pre-select the toggle. Decisional sen
 
 ![Resolution form mid-flow](screenshots/02-card-mid-resolution.png)
 
-After resolve, the dashboard's pipeline pills tell the lifecycle story. The pill for stage N flips to either:
-- emerald **outline** (Cleared, human-resolved decisional), or
-- amber-pulse -> emerald **solid** (informational re-run succeeded), or
-- amber-pulse -> rose (informational re-run still failed; new escalation, possibly with different code).
+The dashboard's pipeline pills tell the post-resolve story at a glance: outline-emerald for a human-resolved decisional, solid-emerald for an informational re-run that completed, rose for one that re-escalated with a different reason.
 
 ![Dashboard after resolve](screenshots/03-dashboard-after-resolve.png)
 
@@ -90,6 +87,7 @@ After resolve, the dashboard's pipeline pills tell the lifecycle story. The pill
 | Deployment / Docker / CI | Local-only demo. |
 | Routing library | Two views, single `useState<ViewName>` for active view. |
 | shadcn/ui | Plain Tailwind; the components in step 10/11 didn't need primitive abstractions. |
+| Schema-aware payload form | Informational resolution uses a free-form JSON textarea with parse validation. v2 maps each `EscalationReason.code` to a typed schema (member_id field, file uploader, etc.) and renders the right inputs per code. |
 
 Each gap has a one-line v2 migration in `decisions.md`.
 
@@ -134,7 +132,6 @@ Vite serves at `http://127.0.0.1:5173`. The frontend reads `VITE_API_BASE` (defa
 ├── README.md           this file (the entry point)
 ├── decisions.md        every architectural decision with options/chosen/rationale (the deep dive)
 ├── process.md          build process, release plan, and the prompts that drove key decisions
-├── CLAUDE.md           the original brief + locked decisions (frozen contract)
 ├── backend/
 │   ├── app/
 │   │   ├── state.py            Pydantic domain model
@@ -159,10 +156,9 @@ Vite serves at `http://127.0.0.1:5173`. The frontend reads `VITE_API_BASE` (defa
             └── ExceptionQueue.tsx  cards + resolution form per card
 ```
 
-## Demo narrative (5 minutes)
+## Walkthrough
 
-1. **Open Exception Queue.** 7 cards, mix of pre-escalations (APT-06, APT-14, both informational) and agent-rolled escalations. Each card shows code, stage, message, suggested action, agent context (collapsible), pipeline strip, resolution form. Mode toggle pre-selects from the catalog hint (the small ★).
-2. **Resolve APT-06 informational.** Type a JSON payload like `{"member_id": "M-12345-CORRECTED"}`; submit. Card disappears. Switch to Dashboard. Watch the pipeline pills run: stage 1 amber-pulse, then green; stages 2-6 advance through.
-3. **Resolve APT-14 decisional.** Just a note, click "Mark Cleared & Resume". Card disappears. Dashboard: APT-14's stage 2 pill is now an emerald outline (human-resolved), and stages 3-onward advance.
-4. **Live strategy swap.** Top-nav strategy dropdown -> LLMRule. Reload the dashboard sort by Score. The reasoning prefix changes from `SLA 0.85, ...` to `[llm_rule:mock] ...`. Same data, different lens.
-5. **What I would build next.** Three concrete v2 items: schema-aware payload form per code; SSE for sub-second escalation surfacing; pydantic2ts to remove the manual type mirror.
+1. **Open the Exception Queue tab.** Each card surfaces the structured `EscalationReason` payload: code, stage, message, suggested action, collapsible agent context, pipeline strip, and a resolution form. The form's mode toggle is pre-selected from the catalog hint (the small ★ marks the recommended mode).
+2. **Resolve an informational card.** On a card with Informational pre-selected (for example APT-06's `member_id_mismatch`), enter a JSON payload such as `{"member_id": "M-12345-CORRECTED"}` and submit. The card disappears within one polling interval. Switch to the Dashboard and watch that appointment's escalated stage pill cycle from amber-pulse to solid emerald, then watch downstream stages advance.
+3. **Resolve a decisional card.** On a card with Decisional pre-selected, enter a short note and submit. The card disappears. On the Dashboard, the resolved stage's pill is now outline-emerald (signaling human-resolved rather than agent-completed); downstream stages advance.
+4. **Hot-swap the priority strategy.** Use the top-nav dropdown to switch from WeightedSum to LLMRule. Hover any score on the Dashboard's table to see the reasoning text: the prefix shifts from numeric (`SLA 0.85, client 1.00, ...`) to natural-language (`[llm_rule:mock] ...`). Same data, two lenses on the priority question.

@@ -34,7 +34,7 @@ class AgentTuning:
 
     work_seconds_min: float = 1.0
     work_seconds_max: float = 4.0
-    # ~15-20% per backend/CLAUDE.md, tuned mid-band for demo readability.
+    # ~15-20% per project spec, tuned mid-band for demo readability.
     escalation_probability: float = 0.18
 
 
